@@ -64,9 +64,54 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-solaris-passwd" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-centos7_install_python3" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2020/06/12/solaris-passwd/" class="article-date">
+    <a href="/2020/06/14/centos7_install_python3/" class="article-date">
+  <time datetime="2020-06-15T05:53:41.178Z" itemprop="datePublished">2020-06-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/14/centos7_install_python3/">centos7_install_python3</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#centos7 install python3<br>1.安装相关软件包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make libffi-devel wget bzip2</span></span><br></pre></td></tr></table></figure>
+<p>2.下载python3源码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz</span></span><br><span class="line"><span class="comment">#tar -xvJf Python-3.7.0.tar.xz</span></span><br></pre></td></tr></table></figure>
+<p>3.编译安装python3</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#cd Python-3.7.0;</span></span><br><span class="line"><span class="comment">#./configure prefix=/usr/local/python3</span></span><br><span class="line"><span class="comment">#make;</span></span><br><span class="line"><span class="comment">#make install</span></span><br></pre></td></tr></table></figure>
+<p>4.创建python3,pip3链接</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#ln -s /usr/local/python3/bin/python3 /usr/bin/python3</span></span><br><span class="line"><span class="comment">#ln -s /usr/local/python3/bin/pip3 /usr/bin/pip3</span></span><br><span class="line"><span class="comment">#pip3 install –-upgrade pip</span></span><br></pre></td></tr></table></figure>
+<p>5.注意事项<br>不要替换系统中原有的python(/usr/bin/python)路径<br>因为yum相关的两个文件需要用到python2的环境<br>/usr/bin/yum，/usr/libexec/urlgrabber-ext-down</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/06/14/centos7_install_python3/" data-id="ckbg30x320000uvjxe55pcung" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-solaris_password" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/06/12/solaris_password/" class="article-date">
   <time datetime="2020-06-12T08:58:52.973Z" itemprop="datePublished">2020-06-12</time>
 </a>
     
@@ -78,7 +123,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/12/solaris-passwd/">solaris-passwd</a>
+      <a class="article-title" href="/2020/06/12/solaris_password/">solaris_password</a>
     </h1>
   
 
@@ -113,7 +158,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/06/12/solaris-passwd/" data-id="ckbbzbxh90000lzjx51i5egcv" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/06/12/solaris_password/" data-id="ckbg30x390001uvjxeirk1585" class="article-share-link">Share</a>
       
       
     </footer>
@@ -203,7 +248,11 @@
       <ul>
         
           <li>
-            <a href="/2020/06/12/solaris-passwd/">solaris-passwd</a>
+            <a href="/2020/06/14/centos7_install_python3/">centos7_install_python3</a>
+          </li>
+        
+          <li>
+            <a href="/2020/06/12/solaris_password/">solaris_password</a>
           </li>
         
           <li>
