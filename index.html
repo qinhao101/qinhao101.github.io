@@ -181,6 +181,493 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2021/12/19/Python%20re%E6%A8%A1%E5%9D%97%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="秦浩">
+      <meta itemprop="description" content="记录日常技术问题，仅供日后查阅">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qinhao's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/19/Python%20re%E6%A8%A1%E5%9D%97%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">Python re模块使用笔记</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-12-19 00:00:00 / 修改时间：14:59:18" itemprop="dateCreated datePublished" datetime="2021-12-19T00:00:00+08:00">2021-12-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Python-re模块使用笔记"><a href="#Python-re模块使用笔记" class="headerlink" title="Python re模块使用笔记"></a>Python re模块使用笔记</h1><p><a href="https://docs.python.org/zh-cn/3/library/re.html#regular-expression-examples" target="_blank" rel="noopener">python官方文档中re模块的例子</a></p>
+<p>贪婪匹配和非贪婪匹配</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pattern1 = re.compile(<span class="string">r'(\w+:?\d?):.*?inet\s(\d&#123;1,3&#125;.\d&#123;1,3&#125;.\d&#123;1,3&#125;.\d&#123;1,3&#125;)'</span>,re.DOTALL)</span><br><span class="line">pattern2 = re.compile(<span class="string">r'(\w+:?\d?):.*inet\s(\d&#123;1,3&#125;.\d&#123;1,3&#125;.\d&#123;1,3&#125;.\d&#123;1,3&#125;)'</span>,re.DOTALL)</span><br><span class="line">strings = <span class="string">'lo0: flags=2001000849&lt;UP,LOOPBACK,RUNNING,MULTICAST,IPv4,VIRTUAL&gt; mtu 8232 index 1\n\tinet 127.0.0.1 netmask ff000000 \nbge0: flags=1000843&lt;UP,BROADCAST,RUNNING,MULTICAST,IPv4&gt; mtu 1500 index 2\n\tinet 10.10.180.77 netmask ffffff00 broadcast 10.10.180.255\nbge1: flags=1000843&lt;UP,BROADCAST,RUNNING,MULTICAST,IPv4&gt; mtu 1500 index 3\n\tinet 192.168.100.100 netmask ffffff00 broadcast 192.168.100.255\n'</span></span><br><span class="line">In [<span class="number">22</span>]: res1 = pattern1.findall(strings)</span><br><span class="line">In [<span class="number">23</span>]: res2 = pattern2.findall(strings)</span><br><span class="line">In [<span class="number">24</span>]: res1</span><br><span class="line">Out[<span class="number">24</span>]: [(<span class="string">'lo0'</span>, <span class="string">'192.168.100.100'</span>)]</span><br><span class="line">In [<span class="number">25</span>]: res2</span><br><span class="line">Out[<span class="number">25</span>]: [(<span class="string">'lo0'</span>, <span class="string">'127.0.0.1'</span>), (<span class="string">'bge0'</span>, <span class="string">'10.10.180.77'</span>), (<span class="string">'bge1'</span>, <span class="string">'192.168.100.100'</span>)]</span><br></pre></td></tr></table></figure>
+
+<p>.*匹配除换行符以外的所有字符，设置re.DOTALL后可匹配包含换行符在内的所有字符</p>
+<p>常用函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">strings = <span class="string">'123abc123'</span></span><br><span class="line">pattern = re.compile(<span class="string">'\d+'</span>)  <span class="comment">#编译生成匹配规则</span></span><br><span class="line">result1 = pattern.match(string)    <span class="comment"># match  开头匹配, 只匹配一次</span></span><br><span class="line">result2 = pattern.search(string)    <span class="comment"># search 全局匹配, 只匹配一次</span></span><br><span class="line">result2 = pattern.findall(string)    <span class="comment"># findall 返回是列表，列表中是所有的匹配结果</span></span><br><span class="line">result4 = pattern.finditer(string)    <span class="comment"># finditer 返回是迭代对象,内部存放了匹配对象</span></span><br><span class="line"><span class="keyword">for</span> data <span class="keyword">in</span> result4:</span><br><span class="line">    print(data)</span><br></pre></td></tr></table></figure>
+
+<p>分组</p>
+<p>()小括号为分组标志，使用分组可以将多个匹配表达式组合成一组，方便整组重复匹配和后面对于分组的引用</p>
+<p>要想获得某个分组的内容，直接使用group(num)和groups()函数去直接提取就行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">13</span>]: s=<span class="string">'&lt;p class="lh"&gt;&lt;a class="text-color" href="//www.baidu.com/duty" target="_blank"&gt;使用百度前必读&lt;/a&gt;&lt;/p&gt;'</span></span><br><span class="line">In [<span class="number">14</span>]: a = re.search(<span class="string">r'&lt;a.*&gt;(.*)&lt;/a&gt;'</span>,s)</span><br><span class="line">In [<span class="number">15</span>]: a.group(<span class="number">1</span>)</span><br><span class="line">Out[<span class="number">15</span>]: <span class="string">'使用百度前必读'</span></span><br><span class="line">In [<span class="number">16</span>]: a.group(<span class="number">0</span>)</span><br><span class="line">Out[<span class="number">16</span>]: <span class="string">'&lt;a class="text-color" href="//www.baidu.com/duty" target="_blank"&gt;使用百度前必读&lt;/a&gt;'</span></span><br></pre></td></tr></table></figure>
+
+<p>命名分组</p>
+<p>命名分组就是给具有默认分组编号的组另外再给一个别名。命名分组的语法格式为：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(?P&lt;name&gt;正则表达式)#name是一个合法的标识符</span><br></pre></td></tr></table></figure>
+
+<p>命名分组例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#通过命名分组进行后向引用</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>re.search(<span class="string">r'(?P&lt;name&gt;go)\s+(?P=name)\s+(?P=name)'</span>, <span class="string">'go go go'</span>).group(<span class="string">'name'</span>)</span><br><span class="line"><span class="string">'go'</span></span><br><span class="line"><span class="comment">#通过默认分组编号进行后向引用</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>re.search(<span class="string">r'(go)\s+\1\s+\1'</span>, <span class="string">'go go go'</span>).group()</span><br><span class="line"><span class="string">'go go go'</span></span><br></pre></td></tr></table></figure>
+
+<p>后向引用</p>
+<p>引用的使用同命名分组，根据每个左括号(出现的顺序从左到右依次标记为\1,\2,\3……，0号分组就是整个正则表达式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">交换字符串位置</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>s = <span class="string">'123.456'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>re.sub(<span class="string">r'(\d+)\.(\d+)'</span>, <span class="string">r'\2.\1'</span>, s)</span><br><span class="line"><span class="string">'456.123'</span></span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.notion.so/44292ceff6734529a81d10e310541b21" target="_blank" rel="noopener">断言</a></p>
+<p>综合应用，从日志中得到Solaris iostat -xn 命令每隔一段时间的输出结果</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">print(file_str)</span><br><span class="line">iostat -xn</span><br><span class="line">extended device statistics</span><br><span class="line">r/s    w/s   kr/s   kw/s wait actv wsvc_t asvc_t  %w  %b device</span><br><span class="line"><span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">5.7</span>    <span class="number">5.2</span>   <span class="number">0</span>   <span class="number">0</span> lofi127</span><br><span class="line"><span class="number">0.3</span>   <span class="number">19.5</span>    <span class="number">4.4</span>  <span class="number">169.1</span>  <span class="number">0.0</span>  <span class="number">0.2</span>    <span class="number">0.0</span>    <span class="number">7.9</span>   <span class="number">0</span>   <span class="number">8</span> c3t5000CCA0123BBBD8d0</span><br><span class="line"><span class="number">0.3</span>   <span class="number">19.5</span>    <span class="number">4.4</span>  <span class="number">169.1</span>  <span class="number">0.0</span>  <span class="number">0.2</span>    <span class="number">0.0</span>    <span class="number">7.8</span>   <span class="number">0</span>   <span class="number">8</span> c3t5000CCA0123F2C5Cd0</span><br><span class="line"><span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>   <span class="number">0</span>   <span class="number">0</span> c0t3d0</span><br><span class="line"><span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>   <span class="number">0</span>   <span class="number">0</span> c3t60002AC00000000000000044000199E1d0</span><br><span class="line"><span class="number">61.8</span>   <span class="number">52.2</span> <span class="number">7903.3</span> <span class="number">2708.5</span>  <span class="number">0.0</span>  <span class="number">0.9</span>    <span class="number">0.0</span>    <span class="number">7.9</span>   <span class="number">0</span>  <span class="number">16</span> c3t60002AC00000000000000043000199E1d0</span><br><span class="line"><span class="number">61.2</span>   <span class="number">52.4</span> <span class="number">7824.6</span> <span class="number">2731.1</span>  <span class="number">0.0</span>  <span class="number">0.9</span>    <span class="number">0.0</span>    <span class="number">7.9</span>   <span class="number">0</span>  <span class="number">16</span> c3t60002AC00000000000000042000199E1d0</span><br><span class="line"><span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.1</span>   <span class="number">0</span>   <span class="number">0</span> c3t60002AC00000000000000041000199E1d0</span><br><span class="line"><span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">2.4</span>   <span class="number">0</span>   <span class="number">0</span> c3t60002AC00000000000000117000199E1d0</span><br><span class="line"><span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>   <span class="number">0</span>   <span class="number">0</span> rmt/<span class="number">0</span></span><br><span class="line">......</span><br><span class="line">extended device statistics</span><br><span class="line">r/s    w/s   kr/s   kw/s wait actv wsvc_t asvc_t  %w  %b device</span><br><span class="line"><span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">5.7</span>    <span class="number">5.2</span>   <span class="number">0</span>   <span class="number">0</span> lofi127</span><br><span class="line"><span class="number">0.3</span>   <span class="number">19.5</span>    <span class="number">4.4</span>  <span class="number">169.1</span>  <span class="number">0.0</span>  <span class="number">0.2</span>    <span class="number">0.0</span>    <span class="number">7.9</span>   <span class="number">0</span>   <span class="number">8</span> c3t5000CCA0123BBBD8d0</span><br><span class="line"><span class="number">0.3</span>   <span class="number">19.5</span>    <span class="number">4.4</span>  <span class="number">169.1</span>  <span class="number">0.0</span>  <span class="number">0.2</span>    <span class="number">0.0</span>    <span class="number">7.8</span>   <span class="number">0</span>   <span class="number">8</span> c3t5000CCA0123F2C5Cd0</span><br><span class="line"><span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>   <span class="number">0</span>   <span class="number">0</span> c0t3d0</span><br><span class="line"><span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>   <span class="number">0</span>   <span class="number">0</span> c3t60002AC00000000000000044000199E1d0</span><br><span class="line"><span class="number">61.8</span>   <span class="number">52.2</span> <span class="number">7903.3</span> <span class="number">2708.5</span>  <span class="number">0.0</span>  <span class="number">0.9</span>    <span class="number">0.0</span>    <span class="number">7.9</span>   <span class="number">0</span>  <span class="number">16</span> c3t60002AC00000000000000043000199E1d0</span><br><span class="line"><span class="number">61.2</span>   <span class="number">52.4</span> <span class="number">7824.6</span> <span class="number">2731.1</span>  <span class="number">0.0</span>  <span class="number">0.9</span>    <span class="number">0.0</span>    <span class="number">7.9</span>   <span class="number">0</span>  <span class="number">16</span> c3t60002AC00000000000000042000199E1d0</span><br><span class="line"><span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.1</span>   <span class="number">0</span>   <span class="number">0</span> c3t60002AC00000000000000041000199E1d0</span><br><span class="line"><span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">2.4</span>   <span class="number">0</span>   <span class="number">0</span> c3t60002AC00000000000000117000199E1d0</span><br><span class="line"><span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>  <span class="number">0.0</span>  <span class="number">0.0</span>    <span class="number">0.0</span>    <span class="number">0.0</span>   <span class="number">0</span>   <span class="number">0</span> rmt/<span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pattern = re.compile(<span class="string">'(?&lt;=%b device\n)(((\s+\d+\.\d)&#123;8&#125;(\s+\d&#123;1,3&#125;)&#123;2&#125;\s+\w+\n)+)'</span>)</span><br><span class="line">iostat_data = pattern.findall(file_str)</span><br></pre></td></tr></table></figure>
+
+<p>使用分组后，正则表达式会只会返回分组中需要匹配的内容，分组外的表达式会参与搜索，但不会出现在搜索结果中！！！</p>
+<p><a href="https://docs.python.org/zh-cn/3/library/re.html#regular-expression-examples" target="_blank" rel="noopener">re - Regular expression operations - Python 3.9.4 documentation</a></p>
+<p><a href="https://www.cnblogs.com/cute/p/9186208.html" target="_blank" rel="noopener">https://www.cnblogs.com/cute/p/9186208.html</a></p>
+<p><a href="https://www.cnblogs.com/work115/p/5614199.html" target="_blank" rel="noopener">https://www.cnblogs.com/work115/p/5614199.html</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2021/12/19/python%E5%87%BD%E6%95%B0%E8%A3%85%E9%A5%B0%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="秦浩">
+      <meta itemprop="description" content="记录日常技术问题，仅供日后查阅">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qinhao's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/19/python%E5%87%BD%E6%95%B0%E8%A3%85%E9%A5%B0%E5%99%A8/" class="post-title-link" itemprop="url">python函数装饰器</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-12-19 00:00:00 / 修改时间：14:59:56" itemprop="dateCreated datePublished" datetime="2021-12-19T00:00:00+08:00">2021-12-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="python函数装饰器"><a href="#python函数装饰器" class="headerlink" title="python函数装饰器"></a>python函数装饰器</h1><p>1.简单版</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decorator1</span><span class="params">(func)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">inner</span><span class="params">()</span>:</span></span><br><span class="line">		print(<span class="string">'add something before func execution'</span>)</span><br><span class="line">		func()<span class="comment">#引用外部函数的变量，形成闭包</span></span><br><span class="line">		print(<span class="string">'add something after func execution'</span>)</span><br><span class="line">	<span class="keyword">return</span> inner</span><br><span class="line"></span><br><span class="line"><span class="meta">@decorator1</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_function1</span><span class="params">()</span>:</span></span><br><span class="line">	print(<span class="string">'my_function is working'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">add something before func execution</span><br><span class="line">my_function <span class="keyword">is</span> working</span><br><span class="line">add something after func execution</span><br></pre></td></tr></table></figure>
+
+<p>2.被装饰函数带有返回值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decorator2</span><span class="params">(func)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">inner</span><span class="params">()</span>:</span></span><br><span class="line">		print(<span class="string">'add something before func execution'</span>)</span><br><span class="line">		ret = func()<span class="comment">#引用外部函数的变量，形成闭包</span></span><br><span class="line">		print(<span class="string">'add something after func execution'</span>)</span><br><span class="line">		<span class="keyword">return</span> ret</span><br><span class="line">	<span class="keyword">return</span> inner</span><br><span class="line"></span><br><span class="line"><span class="meta">@decorator2</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_function2</span><span class="params">()</span>:</span></span><br><span class="line">	print(<span class="string">'my_function is working'</span>)</span><br><span class="line">	<span class="keyword">return</span> <span class="string">'my return value'</span></span><br></pre></td></tr></table></figure>
+
+<p>执行一下</p>
+<p>r = my_function2()<br>print(r)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">add something before func execution</span><br><span class="line">my_function <span class="keyword">is</span> working</span><br><span class="line">add something after func execution</span><br><span class="line">my <span class="keyword">return</span> value</span><br></pre></td></tr></table></figure>
+
+<p>3.被装饰函数带有参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decorator3</span><span class="params">(func)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">inner</span><span class="params">(*args,**kwargs)</span>:</span></span><br><span class="line">		print(<span class="string">'add something before func execution'</span>)</span><br><span class="line">		ret = func(*args,**kwargs)<span class="comment">#引用外部函数的变量，形成闭包</span></span><br><span class="line">		print(<span class="string">'add something after func execution'</span>)</span><br><span class="line">		<span class="keyword">return</span> ret</span><br><span class="line">	<span class="keyword">return</span> inner</span><br><span class="line"></span><br><span class="line"><span class="meta">@decorator3</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_function3</span><span class="params">(*args,**kwargs)</span>:</span></span><br><span class="line">	print(<span class="string">'my_function is working'</span>,args,kwargs)</span><br><span class="line">	<span class="keyword">return</span> <span class="string">'my return value'</span></span><br></pre></td></tr></table></figure>
+
+<p>执行一下</p>
+<p>r3=my_function3(1,2,3,a=’something’)</p>
+<p>print(r3)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">add something before func execution</span><br><span class="line">my_function <span class="keyword">is</span> working (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>) &#123;<span class="string">'a'</span>: <span class="string">'something'</span>&#125;</span><br><span class="line">add something after func execution</span><br><span class="line">my <span class="keyword">return</span> value</span><br></pre></td></tr></table></figure>
+
+<p>4.装饰器带有参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decorator4</span><span class="params">(*a,**kw)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">outer</span><span class="params">(func)</span>:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">inner</span><span class="params">(*args,**kwargs)</span>:</span></span><br><span class="line">            print(<span class="string">'do something with'</span>,a,kw)</span><br><span class="line">            print(<span class="string">'add something before func execution'</span>)</span><br><span class="line">            ret = func(*args,**kwargs)<span class="comment">#引用外部函数的变量，形成闭包</span></span><br><span class="line">            print(<span class="string">'add something after func execution'</span>)</span><br><span class="line">            <span class="keyword">return</span> ret</span><br><span class="line">        <span class="keyword">return</span> inner</span><br><span class="line">    <span class="keyword">return</span> outer</span><br><span class="line"></span><br><span class="line"><span class="meta">@decorator4(1,2,3,a='something a')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_function4</span><span class="params">(*args,**kwargs)</span>:</span></span><br><span class="line">    print(<span class="string">'my_function is working'</span>,args,kwargs)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'my return value'</span></span><br></pre></td></tr></table></figure>
+
+<p>r = my_function4(4,5,6,b=’something b’)<br>print(r)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">do something <span class="keyword">with</span> (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>) &#123;<span class="string">'a'</span>: <span class="string">'something a'</span>&#125;</span><br><span class="line">add something before func execution</span><br><span class="line">my_function <span class="keyword">is</span> working (<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>) &#123;<span class="string">'b'</span>: <span class="string">'something b'</span>&#125;</span><br><span class="line">add something after func execution</span><br><span class="line">my <span class="keyword">return</span> value</span><br></pre></td></tr></table></figure>
+
+<p>5.function.<strong>name</strong>改变的问题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">因为</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decorator</span><span class="params">(func)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">inner</span><span class="params">()</span></span></span><br><span class="line"><span class="function">			<span class="title">func</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	<span class="title">return</span> <span class="title">inner</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">@<span class="title">decorator</span></span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">test</span><span class="params">()</span>:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line">实际上等价于</span><br><span class="line">test = decorator(test)=inner</span><br><span class="line">所以被装饰后的test.__name__即为inner</span><br></pre></td></tr></table></figure>
+
+<p>解决方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> wraps</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decorator5</span><span class="params">(*a,**kw)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">outer</span><span class="params">(func)</span>:</span></span><br><span class="line"><span class="meta">        @wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">inner</span><span class="params">(*args,**kwargs)</span>:</span></span><br><span class="line">            print(<span class="string">'do something with'</span>,a,kw)</span><br><span class="line">            print(<span class="string">'add something before func execution'</span>)</span><br><span class="line">            ret = func(*args,**kwargs)<span class="comment">#引用外部函数的变量，形成闭包</span></span><br><span class="line">            print(<span class="string">'add something after func execution'</span>)</span><br><span class="line">            <span class="keyword">return</span> ret</span><br><span class="line">        <span class="keyword">return</span> inner</span><br><span class="line">    <span class="keyword">return</span> outer</span><br><span class="line"></span><br><span class="line"><span class="meta">@decorator5(1,2,3,a='something a')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_function5</span><span class="params">(*args,**kwargs)</span>:</span></span><br><span class="line">    print(<span class="string">'my_function is working'</span>,args,kwargs)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'my return value'</span></span><br><span class="line"></span><br><span class="line">my_function5.__name__</span><br><span class="line"><span class="string">'my_function5'</span></span><br></pre></td></tr></table></figure>
+
+<p>functools.wraps 的作用在于：</p>
+<p>把被封装函数的<strong>name</strong>、module、<strong>doc</strong>和 <strong>dict</strong>都复制到封装函数去。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2021/12/19/python%E7%B1%BB%E5%B1%9E%E6%80%A7%E7%9A%84%E7%90%86%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="秦浩">
+      <meta itemprop="description" content="记录日常技术问题，仅供日后查阅">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qinhao's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/19/python%E7%B1%BB%E5%B1%9E%E6%80%A7%E7%9A%84%E7%90%86%E8%A7%A3/" class="post-title-link" itemprop="url">python类属性的理解</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-12-19 00:00:00 / 修改时间：15:18:35" itemprop="dateCreated datePublished" datetime="2021-12-19T00:00:00+08:00">2021-12-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="python类属性的理解"><a href="#python类属性的理解" class="headerlink" title="python类属性的理解"></a>python类属性的理解</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span></span><br><span class="line">	count = <span class="number">0</span>   <span class="comment">#类属性，属于类，不属于实例</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,name,sex,age)</span>:</span> </span><br><span class="line">		self.name = name</span><br><span class="line">		self.sex = sex</span><br><span class="line">		Person.count += <span class="number">1</span>  <span class="comment">#每次创建一个实例count都自动加一</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">talk</span><span class="params">(self)</span>:</span></span><br><span class="line">		print(<span class="string">'&#123;&#125; is speeking'</span>.format(self.name))</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">walk</span><span class="params">(self)</span>:</span></span><br><span class="line">		print(<span class="string">'&#123;&#125; is walking'</span>.format(self.name))</span><br><span class="line"></span><br><span class="line">tom = Person(<span class="string">'tom'</span>,<span class="string">'male'</span>)</span><br><span class="line">print(tom.name,tome.sex)</span><br><span class="line">alice = Person(<span class="string">'alice'</span>,<span class="string">'female'</span>)</span><br><span class="line">print(alice.name,alice.sex)</span><br><span class="line">tom.talk</span><br><span class="line">alice.walk</span><br></pre></td></tr></table></figure>
+
+<p>1：count 是类属性，只属于类，不属于实例</p>
+<p>2：两侧有双下划线的函数（方法）都是python的‘魔法方法’，这个函数负责在实例化的时候自动将传入参数分配给实例，类中的函数默认第一个参数都会传入self参数，这个self参数就是代表实例化后的实例本身，如下面的tom，（self也可以换成其他名字）</p>
+<h1 id="1-类变量"><a href="#1-类变量" class="headerlink" title="1 类变量"></a>1 类变量</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span></span><br><span class="line">    count = <span class="number">0</span>   <span class="comment">#类属性，属于类，不属于实例</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,name,sex)</span>:</span> </span><br><span class="line">        self.name = name</span><br><span class="line">        self.sex = sex</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">change_count</span><span class="params">(self,stage)</span>:</span></span><br><span class="line">        self.count = self.count + stage</span><br><span class="line"></span><br><span class="line">a = Person(<span class="string">'a'</span>,<span class="string">'male'</span>)</span><br><span class="line">b = Person(<span class="string">'b'</span>,<span class="string">'female'</span>)</span><br><span class="line">print(<span class="string">'########before a run change_count method########'</span>)</span><br><span class="line">print(a.__dict__)</span><br><span class="line">print(<span class="string">'id(a.count):&#123;&#125;,id(Person.count):&#123;&#125;'</span>.format(id(a.count),id(Person.count)))</span><br><span class="line">print(<span class="string">'a.count:&#123;&#125;'</span>.format(a.count))</span><br><span class="line">print(<span class="string">'Person.count:&#123;&#125;'</span>.format(Person.count))</span><br><span class="line">a.change_count(<span class="number">10</span>)</span><br><span class="line">print(<span class="string">'########after a run change_count method########'</span>)</span><br><span class="line">print(a.__dict__)</span><br><span class="line">print(<span class="string">'id(a.count):&#123;&#125;,id(Person.count):&#123;&#125;'</span>.format(id(a.count),id(Person.count)))</span><br><span class="line">print(<span class="string">'a.count:&#123;&#125;'</span>.format(a.count))</span><br><span class="line">print(<span class="string">'Person.count:&#123;&#125;'</span>.format(Person.count))</span><br><span class="line"></span><br><span class="line">print(<span class="string">'########################3'</span>)</span><br><span class="line">print(<span class="string">'########before b run change_count method########'</span>)</span><br><span class="line">print(b.__dict__)</span><br><span class="line">print(<span class="string">'b.count:&#123;&#125;'</span>.format(b.count))</span><br><span class="line">print(<span class="string">'Person.count:&#123;&#125;'</span>.format(Person.count))</span><br><span class="line">print(<span class="string">'id(b.count):&#123;&#125;,id(Person.count):&#123;&#125;'</span>.format(id(b.count),id(Person.count)))</span><br><span class="line">b.change_count(<span class="number">15</span>)</span><br><span class="line">print(<span class="string">'########after b run change_count method########'</span>)</span><br><span class="line">print(b.__dict__)</span><br><span class="line">print(<span class="string">'b.count:&#123;&#125;'</span>.format(b.count))</span><br><span class="line">print(<span class="string">'Person.count:&#123;&#125;'</span>.format(Person.count))</span><br><span class="line">print(<span class="string">'id(b.count):&#123;&#125;,id(Person.count):&#123;&#125;'</span>.format(id(b.count),id(Person.count)))</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">########before a run change_count method########</span></span><br><span class="line">&#123;<span class="string">'name'</span>: <span class="string">'a'</span>, <span class="string">'sex'</span>: <span class="string">'male'</span>&#125;</span><br><span class="line">id(a.count):<span class="number">139680168811168</span>,id(Person.count):<span class="number">139680168811168</span></span><br><span class="line">a.count:<span class="number">0</span></span><br><span class="line">Person.count:<span class="number">0</span></span><br><span class="line"><span class="comment">########after a run change_count method########</span></span><br><span class="line">&#123;<span class="string">'name'</span>: <span class="string">'a'</span>, <span class="string">'sex'</span>: <span class="string">'male'</span>, <span class="string">'count'</span>: <span class="number">10</span>&#125;</span><br><span class="line">id(a.count):<span class="number">139680168811488</span>,id(Person.count):<span class="number">139680168811168</span></span><br><span class="line">a.count:<span class="number">10</span></span><br><span class="line">Person.count:<span class="number">0</span></span><br><span class="line"><span class="comment">########################3</span></span><br><span class="line"><span class="comment">########before b run change_count method########</span></span><br><span class="line">&#123;<span class="string">'name'</span>: <span class="string">'b'</span>, <span class="string">'sex'</span>: <span class="string">'female'</span>&#125;</span><br><span class="line">b.count:<span class="number">0</span></span><br><span class="line">Person.count:<span class="number">0</span></span><br><span class="line">id(b.count):<span class="number">139680168811168</span>,id(Person.count):<span class="number">139680168811168</span></span><br><span class="line"><span class="comment">########after b run change_count method########</span></span><br><span class="line">&#123;<span class="string">'name'</span>: <span class="string">'b'</span>, <span class="string">'sex'</span>: <span class="string">'female'</span>, <span class="string">'count'</span>: <span class="number">15</span>&#125;</span><br><span class="line">b.count:<span class="number">15</span></span><br><span class="line">Person.count:<span class="number">0</span></span><br><span class="line">id(b.count):<span class="number">139680168811648</span>,id(Person.count):<span class="number">139680168811168</span></span><br></pre></td></tr></table></figure>
+
+<p>通过上面例子可以看出</p>
+<p>1，实例创建后：</p>
+<p>实例变量字典里只有init方法初始化的name和sex两个属性，但是实例a访问类属性count，a.count却没有发生报错，而且通过id函数可以看出a.count和Person.count是指向的是同一个变量，此时的count还是初始值0，没有变化。</p>
+<p>2，在执行了change_count方法后：</p>
+<p>实例变量字典里面出现了一个新的属性count=10，而且a.count和Person.count的id值不再相同，即他们变成了两个完全不同的变量，所以就可以理解此时a.count=10,而Person.count=0了</p>
+<p>3，接下来是实例b的操作，和a一样，在对类变量count改写之前，a和b共享同一个类变量count，但是执行change_count方法改写了count变量以后，就拥有了自己独立的count变量，这个变量是区别于其他实例，父类独立存在的。</p>
+<p>下面看看把类变量变成列表会是什么样的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span>:</span></span><br><span class="line">	lst = []</span><br><span class="line"></span><br><span class="line">t1 = Test()</span><br><span class="line">t2 = Test()</span><br><span class="line"></span><br><span class="line">t1.lst.append(<span class="string">'t1'</span>)</span><br><span class="line">print(t1.lst)</span><br><span class="line">print(t2.lst)</span><br><span class="line"></span><br><span class="line">**运行结果：</span><br><span class="line">[<span class="string">'t1'</span>]</span><br><span class="line">[<span class="string">'t1'</span>]**</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，t1和t2还是会共享父类的变量的，只是此时的类变量换成了列表，</p>
+<p>注意t1.lst.append(‘t1’)的操作并没有改变类变量的值，所以t1和t2还是能看到同样的列表lst</p>
+<p>接下来改写类变量lst：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span>:</span></span><br><span class="line">	lst = []</span><br><span class="line"></span><br><span class="line">t1 = Test()</span><br><span class="line">t2 = Test()</span><br><span class="line"></span><br><span class="line">t1.lst = <span class="string">'hello world'</span></span><br><span class="line">print(t1.lst)</span><br><span class="line">print(t2.lst)</span><br><span class="line"></span><br><span class="line">**运行结果：</span><br><span class="line">hello world</span><br><span class="line">[]**</span><br></pre></td></tr></table></figure>
+
+<p>此时实例t1把lst赋值成了一个字符串，两个实例就无法在看到同一个类变量了。这种情况也适用于字典的情况，需要对“变量值的改变”这一句有深刻的理解</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2021/12/19/python%E7%B1%BB%E4%BD%9C%E4%B8%BA%E8%A3%85%E9%A5%B0%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="秦浩">
+      <meta itemprop="description" content="记录日常技术问题，仅供日后查阅">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qinhao's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/19/python%E7%B1%BB%E4%BD%9C%E4%B8%BA%E8%A3%85%E9%A5%B0%E5%99%A8/" class="post-title-link" itemprop="url">python类作为装饰器</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-12-19 00:00:00 / 修改时间：15:01:56" itemprop="dateCreated datePublished" datetime="2021-12-19T00:00:00+08:00">2021-12-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="python类作为装饰器"><a href="#python类作为装饰器" class="headerlink" title="python类作为装饰器"></a>python类作为装饰器</h1><p>一、不带参数的类装饰器</p>
+<p>1、了解类装饰器传递了哪些参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ClassDecorator</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, *args, **kwargs)</span>:</span></span><br><span class="line">        print(<span class="string">'__init__'</span>, self, args, kwargs)</span><br><span class="line"></span><br><span class="line"><span class="meta">@ClassDecorator</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">    print(<span class="string">'func is working'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>运行一下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ipython -i class_decorators.py</span><br><span class="line">__init__ &lt;__main__.ClassDecorator object at <span class="number">0x7f20b33ffda0</span>&gt; (&lt;function func at <span class="number">0x7f20b3487730</span>&gt;,) &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出@ClassDecorator将被装饰函数当作参数传入了<strong>init</strong>函数，初始化了一个ClassDecorator实例</p>
+<p>现在来运行一下被装饰函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">8</span>]: func(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>)</span><br><span class="line">---------------------------------------------------------------------------</span><br><span class="line">TypeError                                 Traceback (most recent call last)</span><br><span class="line">&lt;ipython-input<span class="number">-8</span><span class="number">-2036</span>b2cfd233&gt; <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">----&gt; 1 func(1,2,3)</span><br><span class="line"></span><br><span class="line">TypeError: <span class="string">'ClassDecorator'</span> object <span class="keyword">is</span> <span class="keyword">not</span> callable</span><br></pre></td></tr></table></figure>
+
+<p>报错了，提示ClassDecorator不是可被调用的</p>
+<p>所以让他变成可调用的</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ClassDecorator</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, func)</span>:</span></span><br><span class="line">        self.func = func</span><br><span class="line">       </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, *args, **kwargs)</span>:</span></span><br><span class="line">        print(<span class="string">'before func '</span>, args)</span><br><span class="line">        r = self.func(*args, **kwargs)</span><br><span class="line">        print(<span class="string">'after func'</span>, r)</span><br><span class="line">        <span class="keyword">return</span> r</span><br><span class="line">        </span><br><span class="line"><span class="meta">@ClassDecorator</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">		print(<span class="string">'func is working'</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">4</span>]: func(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>)</span><br><span class="line">before func  (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">func <span class="keyword">is</span> working</span><br><span class="line">after func <span class="number">0</span></span><br><span class="line">Out[<span class="number">4</span>]: <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>装饰器作用实现了。</p>
+<p>总结一下，在不带参数的类装饰器中：</p>
+<ol>
+<li>被装饰函数由<strong>init</strong>函数将传入</li>
+<li>装饰过程在<strong>call</strong>函数中完成</li>
+<li>被装饰函数的参数由<strong>call</strong>函数接收</li>
+</ol>
+<h1 id="二、带参数的类装饰器"><a href="#二、带参数的类装饰器" class="headerlink" title="二、带参数的类装饰器"></a>二、带参数的类装饰器</h1><h2 id="跟上面步骤一样，先了解类装饰器传递了哪些参数"><a href="#跟上面步骤一样，先了解类装饰器传递了哪些参数" class="headerlink" title="跟上面步骤一样，先了解类装饰器传递了哪些参数"></a>跟上面步骤一样，先了解类装饰器传递了哪些参数</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ClassDecorator</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, *a, **kw)</span>:</span></span><br><span class="line">        print(<span class="string">'__init__'</span>,a ,kw)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, *args, **kwargs)</span>:</span></span><br><span class="line">        print(<span class="string">'__call__'</span>,args ,kwargs)</span><br><span class="line"></span><br><span class="line"><span class="meta">@ClassDecorator(1,2,3,"class decorator")</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">    print(<span class="string">'func is working'</span>, args, kwargs)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>运行结果为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">__init__ (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="string">'class decorator'</span>) &#123;&#125;</span><br><span class="line">__call__ (&lt;function func at <span class="number">0x7f7b0a6b2268</span>&gt;,) &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出参数传递已经和没有参数时不一样了，<strong>init</strong>函数接收了装饰器的参数，被装饰函数传递给了<strong>call</strong>函数。</p>
+<p>根据函数装饰器的方法，完善上面类装饰器的代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ClassDecorator</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, *a, **kw)</span>:</span></span><br><span class="line">        self.conf_args = a</span><br><span class="line">        self.conf_kw = kw</span><br><span class="line">       </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, func)</span>:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">            print(<span class="string">'before func'</span>, self.conf_args, self.conf_kw)</span><br><span class="line">            r = func(*args, **kwargs)</span><br><span class="line">            print(<span class="string">'after func'</span>, r)</span><br><span class="line">            <span class="keyword">return</span> r</span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line"><span class="meta">@ClassDecorator(1,2,3,a='something')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">    print(<span class="string">'func is working'</span>, args, kwargs)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>测试一下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">12</span>]: func(<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,b=<span class="string">'function'</span>)</span><br><span class="line">before func (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>) &#123;<span class="string">'a'</span>: <span class="string">'something'</span>&#125;</span><br><span class="line">func <span class="keyword">is</span> working (<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>) &#123;<span class="string">'b'</span>: <span class="string">'function'</span>&#125;</span><br><span class="line">after func <span class="number">0</span></span><br><span class="line">Out[<span class="number">12</span>]: <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>stackoverflow上面给出的一个综合方案版本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_Cache</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, function, max_hits=<span class="number">10</span>, timeout=<span class="number">5</span>)</span>:</span></span><br><span class="line">        self.function = function</span><br><span class="line">        self.max_hits = max_hits</span><br><span class="line">        self.timeout = timeout</span><br><span class="line">        self.cache = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, *args)</span>:</span></span><br><span class="line">        <span class="comment"># Here the code returning the correct thing.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># wrap _Cache to allow for deferred calling</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Cache</span><span class="params">(function=None, max_hits=<span class="number">10</span>, timeout=<span class="number">5</span>)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> function:</span><br><span class="line">        <span class="keyword">return</span> _Cache(function)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(function)</span>:</span></span><br><span class="line">            <span class="keyword">return</span> _Cache(function, max_hits, timeout)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"><span class="meta">@Cache</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">double</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x * <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@Cache(max_hits=100, timeout=50)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">double</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x * <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>可以同时解决有参数和没有参数的情况</p>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/7492068/python-class-decorator-arguments" target="_blank" rel="noopener">https://stackoverflow.com/questions/7492068/python-class-decorator-arguments</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://www.codementor.io/@dobristoilov/python-class-decorator-part-1-simple-without-configuration-arguments-rsjqa3qi8" target="_blank" rel="noopener">https://www.codementor.io/@dobristoilov/python-class-decorator-part-1-simple-without-configuration-arguments-rsjqa3qi8</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://www.codementor.io/@dobristoilov/python-class-decorator-part-ii-with-configuration-arguments-rv73o8pjn" target="_blank" rel="noopener">https://www.codementor.io/@dobristoilov/python-class-decorator-part-ii-with-configuration-arguments-rv73o8pjn</a></p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2021/07/06/python%E4%B8%AD%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D%E7%9A%84%E7%90%86%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="秦浩">
+      <meta itemprop="description" content="记录日常技术问题，仅供日后查阅">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qinhao's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/07/06/python%E4%B8%AD%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D%E7%9A%84%E7%90%86%E8%A7%A3/" class="post-title-link" itemprop="url">python中的深拷贝和浅拷贝</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-07-06 00:00:00" itemprop="dateCreated datePublished" datetime="2021-07-06T00:00:00+08:00">2021-07-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-12-21 10:16:41" itemprop="dateModified" datetime="2021-12-21T10:16:41+08:00">2021-12-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="python中深拷贝和浅拷贝的理解"><a href="#python中深拷贝和浅拷贝的理解" class="headerlink" title="python中深拷贝和浅拷贝的理解"></a>python中深拷贝和浅拷贝的理解</h1><p>python中的赋值都是对象引用的传递</p>
+<h2 id="浅拷贝"><a href="#浅拷贝" class="headerlink" title="浅拷贝"></a>浅拷贝</h2><p>copy.copy()只是增加了一个新的数据引用，新老变量使用的还是原来的数据</p>
+<h2 id="深拷贝"><a href="#深拷贝" class="headerlink" title="深拷贝"></a>深拷贝</h2><p>copy.deepcopy()可以对数据进行真正的拷贝，复制出两份数据并赋值给新变量</p>
+<h2 id="切片"><a href="#切片" class="headerlink" title="切片"></a>切片</h2><p>切片相当于浅拷贝</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2020/07/06/Teamviewer_cannot_connect_in_ubuntu18.04_until_enter_login_screen/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -293,7 +780,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-18 23:54:20" itemprop="dateModified" datetime="2021-12-18T23:54:20+08:00">2021-12-18</time>
+                <time title="修改时间：2021-12-19 02:10:40" itemprop="dateModified" datetime="2021-12-19T02:10:40+08:00">2021-12-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -317,93 +804,17 @@
 
       
           <p>#centos7 install python3<br>1.安装相关软件包</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make libffi-devel wget bzip2</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make libffi-devel wget bzip2</span></span><br></pre></td></tr></table></figure>
 <p>2.下载python3源码</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz</span></span><br><span class="line"><span class="comment">#tar -xvJf Python-3.7.0.tar.xz</span></span><br></pre></td></tr></table></figure>
-<p>3.编译安装python3</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#cd Python-3.7.0;</span></span><br><span class="line"><span class="comment">#./configure prefix=/usr/local/python3</span></span><br><span class="line"><span class="comment">#make;</span></span><br><span class="line"><span class="comment">#make install</span></span><br></pre></td></tr></table></figure>
-<p>4.创建python3,pip3链接</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#ln -s /usr/local/python3/bin/python3 /usr/bin/python3</span></span><br><span class="line"><span class="comment">#ln -s /usr/local/python3/bin/pip3 /usr/bin/pip3</span></span><br><span class="line"><span class="comment">#pip3 install –-upgrade pip</span></span><br></pre></td></tr></table></figure>
-<p>5.注意事项<br>不要替换系统中原有的python(/usr/bin/python)路径<br>因为yum相关的两个文件需要用到python2的环境<br>/usr/bin/yum，/usr/libexec/urlgrabber-ext-down</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2020/07/06/last-command-fails-due-huge-wtmpx-solaris10/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="秦浩">
-      <meta itemprop="description" content="记录日常技术问题，仅供日后查阅">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qinhao's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/06/last-command-fails-due-huge-wtmpx-solaris10/" class="post-title-link" itemprop="url">last-command-fails-due-huge-wtmpx-solaris10</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-07-06 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-06T00:00:00+08:00">2020-07-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-18 23:40:20" itemprop="dateModified" datetime="2021-12-18T23:40:20+08:00">2021-12-18</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/solaris/" itemprop="url" rel="index"><span itemprop="name">solaris</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="last-command-fails-due-huge-wtmpx-solaris10"><a href="#last-command-fails-due-huge-wtmpx-solaris10" class="headerlink" title="last-command-fails-due-huge-wtmpx-solaris10"></a>last-command-fails-due-huge-wtmpx-solaris10</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> last</span></span><br><span class="line">/var/adm/wtmpx: Value too large for defined data type</span><br></pre></td></tr></table></figure>
-
-<p>solution</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">/usr/lib/acct/fwtmp &lt; wtmpx|tail -1000|/usr/lib/acct/fwtmp -ic &gt; /tmp/wmtpx.new</span></span><br><span class="line"><span class="meta">#</span><span class="bash">last -f /tmp/wmtpx.new</span></span><br></pre></td></tr></table></figure>
-
-
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz</span></span><br><span class="line"><span class="meta">#</span><span class="bash">tar -xvJf Python-3.7.0.tar.xz</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/07/06/centos7_install_python3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -453,7 +864,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-18 23:40:38" itemprop="dateModified" datetime="2021-12-18T23:40:38+08:00">2021-12-18</time>
+                <time title="修改时间：2021-12-19 01:09:37" itemprop="dateModified" datetime="2021-12-19T01:09:37+08:00">2021-12-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -482,26 +893,14 @@
 
 <p>将需要安装的系统iso（一般为sparc版本的Solaris）放入server中，</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> share -F nfs -o ro,anon=0 /cdrom/cdrom0</span></span><br></pre></td></tr></table></figure>
-
-<p>进入client主机的ok模式下，查看网口mac地址</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">ok&gt;</span><span class="bash">banner</span></span><br><span class="line">0:3:ba:16:f4:26</span><br></pre></td></tr></table></figure>
-
-<p>将mac地址加入到server主机的/etc/ethers中</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">vi /etc/ethers</span></span><br><span class="line">0:3:ba:16:f4:26 client</span><br></pre></td></tr></table></figure>
-
-<p>连接好server与client之间的网络，然后在client端操作</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">ok&gt;</span><span class="bash">boot net</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="jump-start-install"><a href="#jump-start-install" class="headerlink" title="jump start install"></a>jump start install</h2><p>有时候需要安装多台一样的机器，可以先安装好一台，然后制作一个安装好的flash镜像包，其他机器都连上这台server以flash包作为蓝本安装自己的系统。安装好的新系统配置信息和server一样</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">mkdir /flash</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">cd</span> /flash</span></span><br><span class="line"><span class="meta">#</span><span class="bash">flarcreate -n flash_root_archive -c -R / -e root_archive -x /flash  flash_archive1</span></span><br></pre></td></tr></table></figure>
-
-<p>其中：</p>
-<p> -n ： 是创建的flash的名字，这个名字在你选择用ftp或http安装后，在下一个页面显示的名字，其实不设置也没有关系，可以省去；</p>
-<p> -c ： 是对flash用compress方式压缩；</p>
-<p> -R ： 是设置创建flash的起始位置，一般是 / ； </p>
-<p> -x ： 去除的目录，不会被flash，一般是放置flash文件的位置</p>
-<p>制作好flash_archive1后，在需要安装系统的机器中插入安装镜像，启动后在安装界面选择Custom Jumpstart安装。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/07/06/solaris10_install_without_dvd/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -551,7 +950,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-18 23:41:23" itemprop="dateModified" datetime="2021-12-18T23:41:23+08:00">2021-12-18</time>
+                <time title="修改时间：2021-12-19 01:09:47" itemprop="dateModified" datetime="2021-12-19T01:09:47+08:00">2021-12-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -577,27 +976,25 @@
           <p>#Solaris 密码相关设置<br><em>客户无意中发现Solaris10的密码最后的几位即使输错也没有关系，依然可以登录，所以研究了一下solaris的密码相关问题</em></p>
 <p>##1.密码加密算法<br>solaris10的密码加密策略根据/etc/security/policy.conf中的crypt_default参数设置，这个参数可以设置的值如下：</p>
 <ul>
-<li>__unix__:传统unix加密算法（Solaris10默认的加密算法）</li>
-<li>1：MD5—与BSD和linux系统上的MD5算法兼容的MD5算法</li>
-<li>2a:Blowfish—与BSD系统上的Blowfish算法兼容的Blowfish算法</li>
-<li>md5: Sun MD5算法—比BSD和linux系统上的MD5算法更强的MD5算法</li>
-<li>5：SHA256算法</li>
-<li>6：SHA512算法</li>
-</ul>
-<p>默认的__unix__加密策略只处理密码的前8位，所以会出现密码第8位后面的字符不影响登录结果的情况，生产环境为了安全起见把加密策略改成更复杂的。</p>
-<p>更改密码加密策略（需要root权限）：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">su - root</span><br><span class="line">vi /etc/security/policy.conf</span><br><span class="line"><span class="meta">#</span><span class="bash">crypt_default = __unix__</span></span><br><span class="line">crypt_default = md5</span><br></pre></td></tr></table></figure>
-<p>密码加密策略只有在下次使用passwd命令更改密码时才生效</p>
-<p>##2.密码策略<br>solaris10的密码策略设置文件为/etc/default/passwd<br>###1.密码复杂度<br>PASSLENGTH——密码长度<br>MINDIFF——出现在新密码中但没出现在旧密码中的字符最小个数<br>MINALPHA——最小字母字符个数<br>MINNONALPHA——最小非字母字符个数<br>MINUPPER——最小大写字母个数<br>MINLOWER——最小小写字母个数<br>MAXREPEATS——单个字符使用的最大次数<br>MINSPECIAL——最小特殊字符个数<br>MINDIGIT——最小数字个数<br>WHITESPACE=yes——密码中是否可以出现空格<br>###2.密码历史<br>HISTORY——最大保存用户历史密码个数，可以防止用户更改密码时使用之前的密码<br>###3.密码过期<br>MINWEEKS——最小过期周数<br>MAXWEEKS——最大过期周数</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">passwd -n min -x max -w warn username</span><br></pre></td></tr></table></figure>
-<p>min:最小过期的天数（MINWEEKS最）<br>max:最大过期的天数（MAXWEEKS）<br>warn：密码到期之前向用户发出警告的天数<br>###4.用户状态</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">passwd -s username</span><br></pre></td></tr></table></figure>
-<p>显示用户的状态</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">su - root</span><br><span class="line">passwd -sa</span><br></pre></td></tr></table></figure>
-<p>显示所有用户状态<br>输出格式为</p>
-<pre><code class="username"></code></pre>
-<p>username：用户名<br>status:<br>1.PS：已经设置密码<br>2.LK：锁定<br>3.NP：无密码<br>4.NL：非登录账户<br>5.UP：账户没有激活<br>mm/dd/yy:密码上次更改的日期<br>min max warn: 密码过期相关<br>##3.passwd命令参数<br>-l 锁定账户<br>-u 解锁账户<br>-d 删除账户密码<br>-f 强制用户下次登录更改密码</p>
-
+<li><p>__unix__:传统unix加密算法（Solaris10默认的加密算法）</p>
+</li>
+<li><p>1：MD5—与BSD和linux系统上的MD5算法兼容的MD5算法</p>
+</li>
+<li><p>2a:Blowfish—与BSD系统上的Blowfish算法兼容的Blowfish算法</p>
+</li>
+<li><p>md5: Sun MD5算法—比BSD和linux系统上的MD5算法更强的MD5算法</p>
+</li>
+<li><p>5：SHA256算法</p>
+</li>
+<li><p>6：SHA512算法</p></li></ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/07/06/solaris_password/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -647,7 +1044,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-19 01:07:25" itemprop="dateModified" datetime="2021-12-19T01:07:25+08:00">2021-12-19</time>
+                <time title="修改时间：2021-12-19 14:57:35" itemprop="dateModified" datetime="2021-12-19T14:57:35+08:00">2021-12-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -674,88 +1071,14 @@
 <h2 id="hexo安装"><a href="#hexo安装" class="headerlink" title="hexo安装"></a>hexo安装</h2><h3 id="下载安装nodejs"><a href="#下载安装nodejs" class="headerlink" title="下载安装nodejs"></a>下载安装nodejs</h3><p>推荐到<a href="https://nodejs.org/en/" target="_blank" rel="noopener">nodejs</a>官网下载<br>下载后得到node-v16.13.1-linux-x64.tar.xz，解压，记住所在位置<br>使用ln命令在/usr/local/bin/下创建可执行文件的链接</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ln -s /home/test/node-v16.13.1-linux-x64/bin/npm /usr/local/bin/npm</span><br><span class="line">ln -s /home/test/node-v16.13.1-linux-x64/bin/npx /usr/local/bin/npx</span><br><span class="line">ln -s /home/test/node-v16.13.1-linux-x64/bin/node /usr/local/bin/node</span><br></pre></td></tr></table></figure>
 <p>不建议使用apt-get install 的方式安装node和npm，装好后会出现npm和node版本不匹配的各种问题</p>
-<h3 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
-<h2 id="hexo-启动"><a href="#hexo-启动" class="headerlink" title="hexo 启动"></a>hexo 启动</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir myblog</span><br><span class="line">cd myblog</span><br><span class="line">hexo init</span><br><span class="line">npm install</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
-<p>出现如下输入，说明服务已经正常启动</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">INFO  Start processing</span><br><span class="line">INFO  Hexo is running at http:&#x2F;&#x2F;localhost:4000 . Press Ctrl+C to stop.</span><br></pre></td></tr></table></figure>
-<p>此时在浏览器中输入<a href="http://localhost:4000" target="_blank" rel="noopener">http://localhost:4000</a> 即可看到hexo自带的页面了</p>
-<h2 id="hexo常用命令"><a href="#hexo常用命令" class="headerlink" title="hexo常用命令"></a>hexo常用命令</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hexo n "postName" == hexo new "postName" #新建文章</span><br><span class="line">hexo n page "pageName" == hexo new page "pageName" #新建页面</span><br><span class="line">hexo g == hexo generate #生成静态页面至public目录</span><br><span class="line">hexo s == hexo server #开启预览访问端口（默认端口4000，'ctrl + c'关闭server）</span><br><span class="line">hexo d == hexo deploy #部署到GitHub</span><br><span class="line">hexo help  # 查看帮助</span><br><span class="line">hexo version  #查看Hexo的版本</span><br></pre></td></tr></table></figure>
-<h2 id="hexo配置"><a href="#hexo配置" class="headerlink" title="hexo配置"></a>hexo配置</h2><p>hexo有两份配置文件，名称都是_config.yml，其中一份在站点的根目录下，比如我们的~/myblog下面的_config.yml，主要用于hexo自身的配置；另一份在themes目录下面的每个主题目录中，用于配置主题相关的选项；按照next的使用文档，把前者称为站点配置文件，后者称为主题配置文件</p>
-<p>以next主题为例，更多<a href="https://hexo.io/themes/" target="_blank" rel="noopener">hexo主题</a>可以在hexo官网下载<br>next主题还有很详细的设置教程，具体参见<a href="http://theme-next.iissnan.com/getting-started.html" target="_blank" rel="noopener">教程</a></p>
-<h3 id="下载主题"><a href="#下载主题" class="headerlink" title="下载主题"></a>下载主题</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> myblog</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/iissnan/hexo-theme-next themes/next</span></span><br></pre></td></tr></table></figure>
-<h3 id="启用主题"><a href="#启用主题" class="headerlink" title="启用主题"></a>启用主题</h3><p>想要启用下载好的主题，只需要在站点配置文件中找到 theme字段，将起改为主题对应的文件夹名字即可</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></table></figure>
-<h3 id="next文档中关于语言的说明"><a href="#next文档中关于语言的说明" class="headerlink" title="next文档中关于语言的说明"></a>next文档中关于语言的说明</h3><p>next文档中简体中文为zh-Hans，但是主题的language包中并没有这个语言，所以站点配置文件language字段设置成zh-Hans后，网页不能显示中文；简单的方法就是把language字段设置成语言包中有的语言即可，比如zh-CN，或者可以自己创建一个zh-Hans的md文件，查看其它语言的md文件可以看到里面都是网站上所有单词对应的相应翻译，内容不多自己创建也很简单。</p>
-<h2 id="github设置"><a href="#github设置" class="headerlink" title="github设置"></a>github设置</h2><h3 id="创建一个名为-你的用户名-github-io-的仓库"><a href="#创建一个名为-你的用户名-github-io-的仓库" class="headerlink" title="创建一个名为 你的用户名.github.io 的仓库"></a>创建一个名为 你的用户名.github.io 的仓库</h3><p><img src="/2020/07/06/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2hexo+github+next/hexo_pic1.jpg" alt="hexo_pic1.jpg"></p>
-<p><img src="/2020/07/06/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2hexo+github+next/hexo_pic2.jpg" alt="hexo_pic2.jpg"></p>
-<p>将来你的网址就是<a href="https://qinhao101.github.com" target="_blank" rel="noopener">https://qinhao101.github.com</a></p>
-<h3 id="配置ssh-key"><a href="#配置ssh-key" class="headerlink" title="配置ssh key"></a>配置ssh key</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ssh-keygen -t rsa -c <span class="string">"邮件地址"</span></span></span><br></pre></td></tr></table></figure>
-<p>密码设置为空，一路回车键下来，默认在家目录的.ssh文件夹下生成id_rsa和id_rsa.pub文件<br>进入github主页的个人设置-&gt;SSH and GPG keys -&gt; New SSH key：<br>把id_rsa.pub文件的内容粘贴到key里面，title随便填写，然后保存</p>
-<h3 id="测试ssh-key"><a href="#测试ssh-key" class="headerlink" title="测试ssh key"></a>测试ssh key</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ssh -T git@github.com</span></span><br></pre></td></tr></table></figure>
-<p>当看到<br>Hi qinhao101! You’ve successfully authenticated, but GitHub does not provide shell access.<br>说明ssh认证配置成功了。</p>
-<p>接下来配置：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git config --global user.name <span class="string">"qinhao.101"</span> //github用户名</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git config --global user.name <span class="string">"xxx@xxx.com"</span> //邮箱地址</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="上传到github"><a href="#上传到github" class="headerlink" title="上传到github"></a>上传到github</h3><p>在站点配置文件_config.yml中配置deploy的部分:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repository: git@github.com:qinhao101&#x2F;qinhao101.github.io.git</span><br><span class="line">  # repository: https:&#x2F;&#x2F;github.com&#x2F;qinhao101&#x2F;qinhao101.github.io.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure>
-
-<p>repository需要按照上面<a href="mailto:git@github.com">git@github.com</a>开头的方式填写，而不是<a href="https://xxx" target="_blank" rel="noopener">https://xxx</a> 的方式，据说是新的hexo采用的方式，之前一直部署不成功，多亏看到<a href="https://www.cnblogs.com/liuxianan/p/build-blog-website-by-hexo-github.html" target="_blank" rel="noopener">这篇文章</a>，感谢这位兄弟。</p>
-<p>然后在安装一个插件：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install hexo-deployer-git --save</span></span><br></pre></td></tr></table></figure>
-
-<p>完成后就可以输入hexo deploy来提交做好的网站了</p>
-<h2 id="写博客"><a href="#写博客" class="headerlink" title="写博客"></a>写博客</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo new <span class="string">"myblog1"</span></span></span><br></pre></td></tr></table></figure>
-
-<p>hexo会在_posts下面生成一个myblog1.md的文件，打开这个文件就可以开始写博客了。</p>
-<h2 id="hexo-进阶"><a href="#hexo-进阶" class="headerlink" title="hexo 进阶"></a>hexo 进阶</h2><h3 id="hexo布局"><a href="#hexo布局" class="headerlink" title="hexo布局"></a>hexo布局</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo new blog</span></span><br></pre></td></tr></table></figure>
-<p>创建文章时默认使用的时post布局，所以会在source/_posts 里生成相应的md文件<br>hexo有三种不同的布局，对应不同的存储位置<br>| 布局  | 路径          |<br>| —– | ————- |<br>| post  | source/_posts |<br>| page  | source        |<br>| draft | source/draft  |</p>
-<h4 id="post"><a href="#post" class="headerlink" title="post"></a>post</h4><p>new这个命令其实是对应的</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo new [layout] &lt;title&gt;</span></span><br></pre></td></tr></table></figure>
-<p>hexo默认使用的就是post布局</p>
-<h4 id="page"><a href="#page" class="headerlink" title="page"></a>page</h4><p>如果想另起一页，需要使用</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo new page page1</span></span><br></pre></td></tr></table></figure>
-<p>此时系统会在source下面创建page1文件夹，里面还有个index.md文件，page1对应的网址为<br><a href="http://xxx.xxx/page1" target="_blank" rel="noopener">http://xxx.xxx/page1</a></p>
-<h4 id="draft"><a href="#draft" class="headerlink" title="draft"></a>draft</h4><p>如果文章不想被别人看到，可以使用draft草稿布局</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo new draft draft1</span></span><br></pre></td></tr></table></figure>
-<p>这样会在source/_draft中新建一个newpage.md文件，如果你的草稿文件写的过程中，想要预览一下，那么可以使用</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo server --draft</span></span><br></pre></td></tr></table></figure>
-<p>草稿写完了想要发布到post中，</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo publish draft newpage</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="创建分类及标签"><a href="#创建分类及标签" class="headerlink" title="创建分类及标签"></a>创建分类及标签</h3><h4 id="创建分类"><a href="#创建分类" class="headerlink" title="创建分类"></a>创建分类</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page categories</span><br></pre></td></tr></table></figure>
-<p>根据提示找到新创建的index.md文件，打开后添加type: “categories”到内容中：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: 文章分类</span><br><span class="line">date: 2021-05-27 13:47:40</span><br><span class="line">type: &quot;categories&quot;</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-<p>打开需要添加标签的文章，给文章添加标签属性：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: 对表单的操作及更多应用</span><br><span class="line">date: 2021-05-26 12:12:57</span><br><span class="line">categories: </span><br><span class="line">- web前端</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-<p>一篇文章只能属于一个分类</p>
-<h4 id="创建标签"><a href="#创建标签" class="headerlink" title="创建标签"></a>创建标签</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page tags</span><br></pre></td></tr></table></figure>
-<p>根据提示找到新创建的index.md文件，打开后添加type: tags到内容中：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: 文章分类</span><br><span class="line">date: 2021-05-27 13:47:40</span><br><span class="line">type: &quot;tags&quot;</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-<p>给文章添加tags属性：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: 表单的操作及更多应用</span><br><span class="line">date: 2017-05-26 12:00:00</span><br><span class="line">categories: </span><br><span class="line">- web前端</span><br><span class="line">tags:</span><br><span class="line">- jQuery</span><br><span class="line">- 表格</span><br><span class="line">- 表单验证</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-
-<p>也可以用另外的写法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: 表单的操作及更多应用</span><br><span class="line">date: 2021-01-01 12:00:00</span><br><span class="line">categories: web前端</span><br><span class="line">tags: [ jQuery, 表格, 表单验证]</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-
-<p>在首页中点击标签即可看到该标签下面的所有文章，只有添加了tags：xxx的文章才会被收录到首页的标签中</p>
-<h4 id="直接更改页面创建模板"><a href="#直接更改页面创建模板" class="headerlink" title="直接更改页面创建模板"></a>直接更改页面创建模板</h4><p>如果嫌这样手工为每一页添加分类和标签太麻烦，可以在scaffolds文件夹中把创建不同布局的模板改掉，这样每次hexo new的时候就可以直接创建出带categories和tags的页面了。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> more post.md</span></span><br><span class="line">---</span><br><span class="line">title: &#123;&#123; title &#125;&#125;</span><br><span class="line">date: &#123;&#123; date &#125;&#125;</span><br><span class="line">tags:</span><br><span class="line">categories:</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-
-<h3 id="避免文章过长全文预览的问题"><a href="#避免文章过长全文预览的问题" class="headerlink" title="避免文章过长全文预览的问题"></a>避免文章过长全文预览的问题</h3><p>next中默认是全文预览的，如果文章太长看起来会很费解，要翻好多页，next说明文档中介绍了一个方法可以设置文章显示的多少。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- more --&gt;</span><br></pre></td></tr></table></figure>
-<p>添加后即可截止预览<br><img src="/2020/07/06/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2hexo+github+next/hexo_pic3.jpg" alt="hexo_pic3.jpg"></p>
-<h3 id="hexo插入图片"><a href="#hexo插入图片" class="headerlink" title="hexo插入图片"></a>hexo插入图片</h3><p>图片在本地时，只能本地服务中看到，部署到网站中图片是不被同步的，为了解决这个问题需要安装一个插件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-asset-image --save</span><br></pre></td></tr></table></figure>
-<p>打开站点的配置文件，找到post_asset_folder选项，改成true<br>然后找到/node_modules/hexo-asset-image/index.js文件，将其中的内容替换成如下内容：</p>
-<p>来自<a href="https://www.jianshu.com/p/f72aaad7b852" target="_blank" rel="noopener">这里</a></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"><span class="keyword">var</span> cheerio = <span class="built_in">require</span>(<span class="string">'cheerio'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// http://stackoverflow.com/questions/14480345/how-to-get-the-nth-occurrence-in-a-string</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getPosition</span>(<span class="params">str, m, i</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> str.split(m, i).join(m).length;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> version = <span class="built_in">String</span>(hexo.version).split(<span class="string">'.'</span>);</span><br><span class="line">hexo.extend.filter.register(<span class="string">'after_post_render'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> config = hexo.config;</span><br><span class="line">  <span class="keyword">if</span>(config.post_asset_folder)&#123;</span><br><span class="line">        <span class="keyword">var</span> link = data.permalink;</span><br><span class="line">    <span class="keyword">if</span>(version.length &gt; <span class="number">0</span> &amp;&amp; <span class="built_in">Number</span>(version[<span class="number">0</span>]) == <span class="number">3</span>)</span><br><span class="line">       <span class="keyword">var</span> beginPos = getPosition(link, <span class="string">'/'</span>, <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">       <span class="keyword">var</span> beginPos = getPosition(link, <span class="string">'/'</span>, <span class="number">3</span>) + <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// In hexo 3.1.1, the permalink of "about" page is like ".../about/index.html".</span></span><br><span class="line">    <span class="keyword">var</span> endPos = link.lastIndexOf(<span class="string">'/'</span>) + <span class="number">1</span>;</span><br><span class="line">    link = link.substring(beginPos, endPos);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> toprocess = [<span class="string">'excerpt'</span>, <span class="string">'more'</span>, <span class="string">'content'</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; toprocess.length; i++)&#123;</span><br><span class="line">      <span class="keyword">var</span> key = toprocess[i];</span><br><span class="line"> </span><br><span class="line">      <span class="keyword">var</span> $ = cheerio.load(data[key], &#123;</span><br><span class="line">        ignoreWhitespace: <span class="literal">false</span>,</span><br><span class="line">        xmlMode: <span class="literal">false</span>,</span><br><span class="line">        lowerCaseTags: <span class="literal">false</span>,</span><br><span class="line">        decodeEntities: <span class="literal">false</span></span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      $(<span class="string">'img'</span>).each(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ($(<span class="keyword">this</span>).attr(<span class="string">'src'</span>))&#123;</span><br><span class="line">            <span class="comment">// For windows style path, we replace '\' to '/'.</span></span><br><span class="line">            <span class="keyword">var</span> src = $(<span class="keyword">this</span>).attr(<span class="string">'src'</span>).replace(<span class="string">'\\'</span>, <span class="string">'/'</span>);</span><br><span class="line">            <span class="keyword">if</span>(!<span class="regexp">/http[s]*.*|\/\/.*/</span>.test(src) &amp;&amp;</span><br><span class="line">               !<span class="regexp">/^\s*\//</span>.test(src)) &#123;</span><br><span class="line">              <span class="comment">// For "about" page, the first part of "src" can't be removed.</span></span><br><span class="line">              <span class="comment">// In addition, to support multi-level local directory.</span></span><br><span class="line">              <span class="keyword">var</span> linkArray = link.split(<span class="string">'/'</span>).filter(<span class="function"><span class="keyword">function</span>(<span class="params">elem</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">return</span> elem != <span class="string">''</span>;</span><br><span class="line">              &#125;);</span><br><span class="line">              <span class="keyword">var</span> srcArray = src.split(<span class="string">'/'</span>).filter(<span class="function"><span class="keyword">function</span>(<span class="params">elem</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">return</span> elem != <span class="string">''</span> &amp;&amp; elem != <span class="string">'.'</span>;</span><br><span class="line">              &#125;);</span><br><span class="line">              <span class="keyword">if</span>(srcArray.length &gt; <span class="number">1</span>)</span><br><span class="line">                srcArray.shift();</span><br><span class="line">              src = srcArray.join(<span class="string">'/'</span>);</span><br><span class="line">              $(<span class="keyword">this</span>).attr(<span class="string">'src'</span>, config.root + link + src);</span><br><span class="line">              <span class="built_in">console</span>.info&amp;&amp;<span class="built_in">console</span>.info(<span class="string">"update link as:--&gt;"</span>+config.root + link + src);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.info&amp;&amp;<span class="built_in">console</span>.info(<span class="string">"no src attr, skipped..."</span>);</span><br><span class="line">            <span class="built_in">console</span>.info&amp;&amp;<span class="built_in">console</span>.info($(<span class="keyword">this</span>));</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">      data[key] = $.html();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>接下来就可以插入图片了，图片需要放到和文章文件名相同的目录下，然后按照正常插入图片：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">![这是代替图片的文字，随便写](head.jpeg)</span><br></pre></td></tr></table></figure>
-
-
-
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/07/06/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2hexo+github+next/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -772,6 +1095,9 @@
 
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
 
@@ -838,18 +1164,18 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
