@@ -181,6 +181,79 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2021/12/27/ubuntu%20zfs%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6%E7%A9%BA%E9%97%B4%E4%B8%8D%E9%87%8A%E6%94%BE%E7%9A%84%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="秦浩">
+      <meta itemprop="description" content="记录日常技术问题，仅供日后查阅">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qinhao's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/27/ubuntu%20zfs%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6%E7%A9%BA%E9%97%B4%E4%B8%8D%E9%87%8A%E6%94%BE%E7%9A%84%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">ubuntu zfs删除文件空间不释放的问题</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-12-27 00:00:00 / 修改时间：14:31:50" itemprop="dateCreated datePublished" datetime="2021-12-27T00:00:00+08:00">2021-12-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="ubuntu-zfs删除文件空间不释放的问题"><a href="#ubuntu-zfs删除文件空间不释放的问题" class="headerlink" title="ubuntu zfs删除文件空间不释放的问题"></a>ubuntu zfs删除文件空间不释放的问题</h1><p>前几天发现zfs文件系统的ubuntu可用空间越来越小，删除了一个大文件以后，空间还是不能释放，虽然solaris zfs也出现过这个空间延迟释放的问题，但是也就是一两分钟的事，ubuntu中的空间不管怎么等都是释放不了。直觉告诉我肯定和zfs的snapshot有关<br>进行了相关的搜索，发现果然是这样：<br>原来ubuntu的apt服务默认会再每次安装完软件包后都对系统做一个快照，所以时间一长，快照就越来越多，占用了越来越多的空间。<br>解决方法如下：</p>
+<h2 id="1-关闭系统自动snapshot"><a href="#1-关闭系统自动snapshot" class="headerlink" title="1.关闭系统自动snapshot"></a>1.关闭系统自动snapshot</h2><p>ZSys also automatically creates a snapshot of the system (packages, snaps, etc.) every time you install a package. To disable these snapshots, run the following command:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mv /etc/apt/apt.conf.d/90_zsys_system_autosnapshot /etc/apt/apt.conf.d/90_zsys_system_autosnapshot.disabled</span><br></pre></td></tr></table></figure>
+<p>这样，下次再安装软件的时候就不会创建snapshot了</p>
+<h2 id="2-删除已经存在的snapshot"><a href="#2-删除已经存在的snapshot" class="headerlink" title="2.删除已经存在的snapshot"></a>2.删除已经存在的snapshot</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> zfs list -H -o name -t snapshot | xargs -n1 zfs destroy -R</span></span><br></pre></td></tr></table></figure>
+<p>参考文档<br>1.<a href="https://askubuntu.com/questions/1233049/disable-automatic-zsys-snapshots-zfs-on-root" target="_blank" rel="noopener">https://askubuntu.com/questions/1233049/disable-automatic-zsys-snapshots-zfs-on-root</a><br>2.<a href="https://blandname.com/2012/04/09/clear-all-zfs-snapshots/" target="_blank" rel="noopener">https://blandname.com/2012/04/09/clear-all-zfs-snapshots/</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2021/12/19/Python%20re%E6%A8%A1%E5%9D%97%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1009,90 +1082,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2020/07/06/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2hexo+github+next/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="秦浩">
-      <meta itemprop="description" content="记录日常技术问题，仅供日后查阅">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qinhao's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/06/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2hexo+github+next/" class="post-title-link" itemprop="url">搭建个人博客 hexo+github+next主题</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-07-06 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-06T00:00:00+08:00">2020-07-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-19 14:57:35" itemprop="dateModified" datetime="2021-12-19T14:57:35+08:00">2021-12-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/hexo/" itemprop="url" rel="index"><span itemprop="name">hexo</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="搭建个人博客-hexo-github-next主题"><a href="#搭建个人博客-hexo-github-next主题" class="headerlink" title="搭建个人博客 hexo+github+next主题"></a>搭建个人博客 hexo+github+next主题</h1><h2 id="工作环境说明"><a href="#工作环境说明" class="headerlink" title="工作环境说明"></a>工作环境说明</h2><p>1.os Ubuntu20.04 5.4.0-91-generic linux x64<br>2.nodejs 16.13.1<br>3.npm 8.3.0<br>4.hexo 4.2.1<br>5.next 5.1.4</p>
-<h2 id="hexo安装"><a href="#hexo安装" class="headerlink" title="hexo安装"></a>hexo安装</h2><h3 id="下载安装nodejs"><a href="#下载安装nodejs" class="headerlink" title="下载安装nodejs"></a>下载安装nodejs</h3><p>推荐到<a href="https://nodejs.org/en/" target="_blank" rel="noopener">nodejs</a>官网下载<br>下载后得到node-v16.13.1-linux-x64.tar.xz，解压，记住所在位置<br>使用ln命令在/usr/local/bin/下创建可执行文件的链接</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ln -s /home/test/node-v16.13.1-linux-x64/bin/npm /usr/local/bin/npm</span><br><span class="line">ln -s /home/test/node-v16.13.1-linux-x64/bin/npx /usr/local/bin/npx</span><br><span class="line">ln -s /home/test/node-v16.13.1-linux-x64/bin/node /usr/local/bin/node</span><br></pre></td></tr></table></figure>
-<p>不建议使用apt-get install 的方式安装node和npm，装好后会出现npm和node版本不匹配的各种问题</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/07/06/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2hexo+github+next/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1164,7 +1153,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1175,7 +1164,7 @@
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">23</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
