@@ -181,6 +181,100 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2020/07/06/solaris_password/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="秦浩">
+      <meta itemprop="description" content="记录日常技术问题，仅供日后查阅">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qinhao's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/06/solaris_password/" class="post-title-link" itemprop="url">Solaris 密码相关设置</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-06 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-06T00:00:00+08:00">2020-07-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-12-19 01:09:47" itemprop="dateModified" datetime="2021-12-19T01:09:47+08:00">2021-12-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/solaris/" itemprop="url" rel="index"><span itemprop="name">solaris</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>#Solaris 密码相关设置<br><em>客户无意中发现Solaris10的密码最后的几位即使输错也没有关系，依然可以登录，所以研究了一下solaris的密码相关问题</em></p>
+<p>##1.密码加密算法<br>solaris10的密码加密策略根据/etc/security/policy.conf中的crypt_default参数设置，这个参数可以设置的值如下：</p>
+<ul>
+<li><p>__unix__:传统unix加密算法（Solaris10默认的加密算法）</p>
+</li>
+<li><p>1：MD5—与BSD和linux系统上的MD5算法兼容的MD5算法</p>
+</li>
+<li><p>2a:Blowfish—与BSD系统上的Blowfish算法兼容的Blowfish算法</p>
+</li>
+<li><p>md5: Sun MD5算法—比BSD和linux系统上的MD5算法更强的MD5算法</p>
+</li>
+<li><p>5：SHA256算法</p>
+</li>
+<li><p>6：SHA512算法</p></li></ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/07/06/solaris_password/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2020/07/06/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2hexo+github+next/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -390,7 +484,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-19 15:26:42" itemprop="dateModified" datetime="2021-12-19T15:26:42+08:00">2021-12-19</time>
+                <time title="修改时间：2021-12-28 11:20:30" itemprop="dateModified" datetime="2021-12-28T11:20:30+08:00">2021-12-28</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -420,16 +514,14 @@
 
 <p>以下内容来自<a href="https://www.thegeekdiary.com/solaris-how-to-truncate-the-wtmpx-file/" target="_blank" rel="noopener">这里</a></p>
 <p>Many a time, we observe that it takes too much time to login into the server. Most of the time the reason being, the wtmpx file is growing, filling up the /var partition (often part of the root partition). In extreme cases, it may even prevent the possibility of logging in, because utmpx entries cannot be made, and login asks the user to exec login from the lowest level shell. In such cases <strong>/var/adm/wtmpx</strong> needs to be truncated without causing problems.</p>
-<h1 id="how-to-truncate-the-wtmpx-file"><a href="#how-to-truncate-the-wtmpx-file" class="headerlink" title="how to truncate the wtmpx file"></a>how to truncate the wtmpx file</h1><p>The most appropriate way to limit the size of /var/adm/wtmpx is using logadm. For example, to limit the size of logfile to 300MB and rotate the logfile if its greater than 300MB :</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> logadm -C 4 -c -s 300m -w /var/adm/wtmpx</span></span><br></pre></td></tr></table></figure>
-<p>Here,</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-C count Delete the oldest versions until there are not more than count files left.</span><br><span class="line">-p period Rotate a log file after the specified time period (period) .</span><br><span class="line">-c Rotate the log file by copying it and truncating the original logfile to zero length, rather than renaming the file.</span><br><span class="line">-w entryname Write an entry into the config file (that is, &#x2F;etc&#x2F;logadm.conf)</span><br><span class="line">-s size Rotate the log file only if its size is greater than or equal to size.</span><br><span class="line">-z count Compress old log files after all other commands have been executed.</span><br></pre></td></tr></table></figure>
-<p>As the -w option is used, we would also get an entry in the /etc/logadm.conf file as :</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># tail -1 &#x2F;etc&#x2F;logadm.conf</span><br><span class="line">wtmpx -C 4 -c -s 300m &#x2F;var&#x2F;adm&#x2F;wtmpx</span><br></pre></td></tr></table></figure>
-<p>To run the rule we just created using logadm, use the -v option which will print the output in verbose mode.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># logadm -v</span><br><span class="line">--lines omitted--</span><br><span class="line"># processing logname: &#x2F;var&#x2F;adm&#x2F;wtmpx</span><br><span class="line"># using default template: $file.$n</span><br><span class="line">mkdir -p &#x2F;var&#x2F;adm # verify directory exists</span><br><span class="line"># cp -fp &#x2F;var&#x2F;adm&#x2F;wtmpx &#x2F;var&#x2F;adm&#x2F;wtmpx.0 # rotate log file via copy (-c flag)</span><br><span class="line"># cp -f &#x2F;dev&#x2F;null &#x2F;var&#x2F;adm&#x2F;wtmpx # trucate log file (-c flag)</span><br><span class="line">touch &#x2F;var&#x2F;adm&#x2F;wtmpx</span><br><span class="line">chown 4:4 &#x2F;var&#x2F;adm&#x2F;wtmpx</span><br><span class="line">chmod 644 &#x2F;var&#x2F;adm&#x2F;wtmpx</span><br><span class="line"># recording rotation date Tue Feb 25 13:51:14 2014 for &#x2F;var&#x2F;adm&#x2F;wtmpx</span><br><span class="line"># writing changes to &#x2F;var&#x2F;logadm.conf</span><br></pre></td></tr></table></figure>
-<h1 id="zero-out-the-file"><a href="#zero-out-the-file" class="headerlink" title="zero-out the file"></a>zero-out the file</h1><p>Another easiest way to trancate the wtmpx file is to zeo it out as :</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># &gt; &#x2F;var&#x2F;adm&#x2F;wtmpx</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/07/06/solaris%E7%9A%84wtmpx%E6%96%87%E4%BB%B6%E8%BF%87%E5%A4%A7%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E6%B3%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -515,7 +607,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -526,7 +618,7 @@
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
