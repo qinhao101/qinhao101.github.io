@@ -181,6 +181,80 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2022/01/06/#%20%E8%A7%A3%E5%86%B3linux%E4%BD%BF%E7%94%A8ssh-copy-id%E7%BB%99solaris10%E4%BC%A0%E9%80%92%E5%85%AC%E9%92%A5%E6%8A%A5%E9%94%99%E7%9A%84%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="秦浩">
+      <meta itemprop="description" content="记录日常技术问题，仅供日后查阅">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qinhao's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/01/06/#%20%E8%A7%A3%E5%86%B3linux%E4%BD%BF%E7%94%A8ssh-copy-id%E7%BB%99solaris10%E4%BC%A0%E9%80%92%E5%85%AC%E9%92%A5%E6%8A%A5%E9%94%99%E7%9A%84%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">解决linux使用ssh-copy-id给solaris10传递公钥报错的问题</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-06 00:00:00 / 修改时间：11:03:52" itemprop="dateCreated datePublished" datetime="2022-01-06T00:00:00+08:00">2022-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="解决linux使用ssh-copy-id给solaris10传递公钥报错的问题"><a href="#解决linux使用ssh-copy-id给solaris10传递公钥报错的问题" class="headerlink" title="解决linux使用ssh-copy-id给solaris10传递公钥报错的问题"></a>解决linux使用ssh-copy-id给solaris10传递公钥报错的问题</h1><h2 id="报错如下："><a href="#报错如下：" class="headerlink" title="报错如下："></a>报错如下：</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh: test: argument expected</span><br></pre></td></tr></table></figure>
+<h2 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h2><p>在ssh-copy-id的第299行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh "$@" "exec sh -c 'cd ; umask 077 ; mkdir -p .ssh &amp;&amp; &#123; [ -z "'`tail     -1c .ssh/authorized_keys 2&gt;/dev/null`'" ] || echo &gt;&gt; .ssh/authorized_keys ;     &#125; &amp;&amp; cat &gt;&gt; .ssh/authorized_keys || exit 1 ; if type restorecon &gt;/dev/null     2&gt;&amp;1 ; then restorecon -F .ssh .ssh/authorized_keys ; fi'"</span><br></pre></td></tr></table></figure>
+<p>本地linux使用远程solaris10的<strong>sh</strong>判断authorized_keys文件并将公钥写入的核心功能。<br>可能因为solaris的sh版本的问题，不支持在这种情况下使用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ -z "'`tail     -1c .ssh/authorized_keys 2&gt;/dev/null`'" ]</span><br></pre></td></tr></table></figure>
+<p>这种test判断形式。<br>所以把上面的<strong>sh</strong>改成<strong>bash</strong>，即可解决<br>更改完如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh "$@" "exec bash -c 'cd ; umask 077 ; mkdir -p .ssh &amp;&amp; &#123; [ -z "'`tail     -1c .ssh/authorized_keys 2&gt;/dev/null`'" ] || echo &gt;&gt; .ssh/authorized_keys ;     &#125; &amp;&amp; cat &gt;&gt; .ssh/authorized_keys || exit 1 ; if type restorecon &gt;/dev/null     2&gt;&amp;1 ; then restorecon -F .ssh .ssh/authorized_keys ; fi'"</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2021/12/28/ubuntu%E5%AE%89%E8%A3%85google-pinyin%E8%BE%93%E5%85%A5%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -910,90 +984,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://qinhao101.github.io/2020/07/06/centos7_install_python3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="秦浩">
-      <meta itemprop="description" content="记录日常技术问题，仅供日后查阅">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qinhao's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/06/centos7_install_python3/" class="post-title-link" itemprop="url">centos7 install python3</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-07-06 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-06T00:00:00+08:00">2020-07-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-19 02:10:40" itemprop="dateModified" datetime="2021-12-19T02:10:40+08:00">2021-12-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>#centos7 install python3<br>1.安装相关软件包</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make libffi-devel wget bzip2</span></span><br></pre></td></tr></table></figure>
-<p>2.下载python3源码</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz</span></span><br><span class="line"><span class="meta">#</span><span class="bash">tar -xvJf Python-3.7.0.tar.xz</span></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/07/06/centos7_install_python3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1065,7 +1055,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1076,7 +1066,7 @@
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-count">28</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1103,7 +1093,7 @@
 <div class="copyright">
   
   &copy; 2015 – 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
